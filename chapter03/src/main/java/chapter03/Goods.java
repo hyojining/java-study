@@ -13,6 +13,13 @@ public class Goods {
 		countOfGoods++;
 	}
 	
+	public Goods(String name, int price, int countStock, int countSold) {
+		this.name = name;
+		this.price = price;
+		this.countStock = countStock;
+		this.countSold = countSold;
+	}
+
 	public String getName() {
 		return name;
 	}
