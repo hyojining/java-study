@@ -18,6 +18,23 @@ public class Song {
 		this.artist = artist;
 		this.track = track;
 		this.year = year;
+		
+		System.out.println(".... some code1");
+		System.out.println(".... some code2");
+		System.out.println(".... some code3");
+		System.out.println(".... some code4");
+		System.out.println(".... some code5");
+	}
+	public Song(String title, String artist) { // 생성자 오버로딩
+//		this.title = title;
+//		this.artist = artist;
+//		
+//		System.out.println(".... some code1");
+//		System.out.println(".... some code2");
+//		System.out.println(".... some code3");
+//		System.out.println(".... some code4");
+//		System.out.println(".... some code5");
+		this(title, null, null, artist, 0, 0); // 코드 중복 피하기 위해 (코드 재사용)
 	}
 	public String getTitle() {
 		return title;

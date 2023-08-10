@@ -10,8 +10,10 @@ public class SongTest {
 //		song1.setComposer("이민수");
 //		song1.setTrack(3);
 //		song1.setYear(2010);
-		
 		song1.show();
+		
+		Song song2 = new Song("Ditto", "New Jeans");
+		song2.show();
 	}
 
 }
