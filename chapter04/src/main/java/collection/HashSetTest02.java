@@ -12,10 +12,9 @@ public class HashSetTest02 {
 		set.add(new Gugudan(9, 9));
 		set.add(new Gugudan(3, 2)); // (2, 3)과 같기 때문에 들어가면 안됨
 		
-		for(Gugudan : set) {
-			System.out.println(set);
+		for(Gugudan g : set) {
+			System.out.println(g);
 		}
-
 	}
 
 }
