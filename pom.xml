@@ -12,6 +12,7 @@
   	<module>practice04</module>
   	<module>chapter04</module>
   	<module>practice05</module>
+  	<module>finaltest</module>
   </modules>
   <properties>
   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
