@@ -18,10 +18,6 @@ public class Printer {
 //		System.out.println(str);
 //	}
 	
-	public <T> void println(T t) {
-		System.out.println(t);
-	}
-	
 	public int sum(Integer... nums) { // nums 배열
 		int s = 0;
 		for(Integer i : nums) {
@@ -29,6 +25,15 @@ public class Printer {
 		}
 		return s;
 	}
+	
+	public <T> void println(T t) {
+		System.out.println(t);
+	}
+	
+//	// 완전 동일
+//	public void println Object(o) {
+//		System.out.println(o);
+//	}
 	
 	public <T> void println(T... ts) {
 		for(T t: ts) {
