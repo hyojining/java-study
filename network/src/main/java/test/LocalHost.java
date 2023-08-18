@@ -17,7 +17,9 @@ public class LocalHost {
 			
 			byte[] IpAddresses = inetAddress.getAddress();
 			for(byte IpAddress : IpAddresses) {
-				System.out.println(IpAddress & 0x000000ff); // 2의 보수
+				// 2의 보수, byte와 integer의 연산 -> integer, unsigned 표현
+				System.out.println(IpAddress & 0x000000ff);
+//				System.out.println(IpAddress);
 			}
 			
 		} catch (UnknownHostException e) {
