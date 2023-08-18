@@ -16,6 +16,7 @@ public class EchoClient {
 	public static void main(String[] args) {
 		Socket socket = null;
 		Scanner scanner = null;
+		
 		try {
 			socket = new Socket();
 			
