@@ -49,7 +49,15 @@ public class RequestHandler extends Thread {
 			
 			log(request);
 			
-					
+			String[] tokens = request.split(" ");
+			if("Get".equals(tokens[0])){
+				responseStaticResource(outputStream, tokens[1], tokens[2]);
+			}else {
+				// methods: POST, PUT, DELETE, HAED, CONNECT
+				// SimpleHttpServer에서는 무시(400 Bad Request)
+				
+				//responseStatic400Error(outputStream, tokens[2]);
+			}
 			// 예제 응답입니다.
 			// 서버 시작과 테스트를 마친 후, 주석 처리 합니다.
 			outputStream.write( "HTTP/1.1 200 OK\r\n".getBytes( "UTF-8" ) );
@@ -70,6 +78,10 @@ public class RequestHandler extends Thread {
 				log( "error:" + ex );
 			}
 		}			
+	}
+
+	private void responseStaticResource(OutputStream outputStream, String url, String protocol) {
+		
 	}
 
 	public void log( String message ) {
