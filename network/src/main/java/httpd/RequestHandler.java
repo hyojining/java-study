@@ -17,8 +17,12 @@ public class RequestHandler extends Thread {
 	@Override
 	public void run() {
 		try {
+			// logging Remote Host IP Address & Port
+			InetSocketAddress inetSocketAddress = ( InetSocketAddress )socket.getRemoteSocketAddress();
+			log( "connected from " + inetSocketAddress.getAddress().getHostAddress() + ":" + inetSocketAddress.getPort() );			
+			
 			// get IOStream
-			OutputStream outputStream = socket.getOutputStream();
+			OutputStream outputStream = socket.getOutputStream(); // 보내야 할 데이터가 stream만 있는 것이 아니라서 
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 			
 			String request = null;		
@@ -40,14 +44,11 @@ public class RequestHandler extends Thread {
 					request = line;
 					break;
 				}
-				log(line);
+//				log(line);
 			}
 			
 			log(request);
 			
-			// logging Remote Host IP Address & Port
-			InetSocketAddress inetSocketAddress = ( InetSocketAddress )socket.getRemoteSocketAddress();
-			log( "connected from " + inetSocketAddress.getAddress().getHostAddress() + ":" + inetSocketAddress.getPort() );
 					
 			// 예제 응답입니다.
 			// 서버 시작과 테스트를 마친 후, 주석 처리 합니다.
