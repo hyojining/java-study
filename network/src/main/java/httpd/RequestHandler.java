@@ -22,7 +22,7 @@ public class RequestHandler extends Thread {
 	public void run() {
 		try {
 			// logging Remote Host IP Address & Port
-			InetSocketAddress inetSocketAddress = ( InetSocketAddress )socket.getRemoteSocketAddress();
+			InetSocketAddress inetSocketAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
 			log( "connected from " + inetSocketAddress.getAddress().getHostAddress() + ":" + inetSocketAddress.getPort() );			
 			
 			// get IOStream
@@ -111,18 +111,40 @@ public class RequestHandler extends Thread {
 
 	}
 	
-	private void responseStatic404Error(OutputStream outputStream, String protocol) {
+	private void responseStatic404Error(OutputStream outputStream, String protocol) throws IOException{
 		// HTTP/1.1 404 File Not Found\r\n
 		// Content-Type:text/html; charset=utf-8\r\n
 		// \r\n
 		// /error/404.html 내용 
+		
+		String errorURL = "/error/404.html";
+	    File file = new File(DOCUMENT_ROOT + errorURL);
+
+	    byte[] body = Files.readAllBytes(file.toPath());
+	    String contentType = Files.probeContentType(file.toPath());
+
+	    outputStream.write("HTTP/1.1 404 File Not Found\r\n".getBytes("UTF-8"));
+	    outputStream.write(("Content-Type: " + contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
+	    outputStream.write("\r\n".getBytes());
+	    outputStream.write(body);
 	}
 
-	private void responseStatic400Error(OutputStream outputStream, String protocol) {
+	private void responseStatic400Error(OutputStream outputStream, String protocol) throws IOException{
 		// HTTP/1.1 400 File Not Found \r\n
 		// Content-Type:text/html; charset=utf-8\r\n
 		// \r\n
 		// /error/400.html 내용
+		
+		String errorURL = "/error/400.html";
+	    File file = new File(DOCUMENT_ROOT + errorURL);
+
+	    byte[] body = Files.readAllBytes(file.toPath());
+	    String contentType = Files.probeContentType(file.toPath());
+
+	    outputStream.write("HTTP/1.1 400 File Not Found\r\n".getBytes("UTF-8"));
+	    outputStream.write(("Content-Type: " + contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
+	    outputStream.write("\r\n".getBytes());
+	    outputStream.write(body);
 	}
 
 	public void log( String message ) {
