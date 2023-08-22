@@ -51,12 +51,12 @@ public class TCPServer {
 					String data = new String(buffer, 0, readByteCount, "utf-8");
 					System.out.println("[server] received:" + data);
 					
-					// SO_TIMEOUT 옵션 테스트용
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+//					// SO_TIMEOUT 옵션 테스트용
+//					try {
+//						Thread.sleep(3000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
 					
 					
 					// 6. 데이터 쓰기
