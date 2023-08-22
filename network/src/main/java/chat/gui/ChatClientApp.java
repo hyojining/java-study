@@ -29,7 +29,7 @@ public class ChatClientApp {
 		
 		String line = "JOIN:OK";
 		if("JOIN:OK".equals(line)) {
-			new ChatWindow(name, socket).show();
+			new ChatWindow(name).show();
 		}
 		
 		
