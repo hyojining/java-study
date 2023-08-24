@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ChatServerThread extends Thread{
 	
-	private String nickname;
+	private String nickname; // 사용자 이름
 	private Socket socket;
 	List<PrintWriter> listWriters;
 	
@@ -40,21 +40,23 @@ public class ChatServerThread extends Thread{
 			// 3. 요청 처리
 			while(true) {
 				String request;
-				request = br.readLine();
+				request = br.readLine(); // Client로부터 데이터 읽어들이기
 				
-				if(request == null) {
-					ChatClient.log("클라이언트로부터 연결 끊김");
+				if(request == null) { // Client가 "quit" 보내지 않고 소켓을 닫은 경우
 					doQuit(pw);
+					ChatServer.log("클라이언트로부터 연결 끊김");
 					break;
 				}
 					
 				// 4. 프로토콜 분석
-				String[] tokens = request.split(":");
-				if("JOIN".equals(tokens[0])) {
+				// token[0]: Client의 요청(닉네임 등록, 메시지 전달, 방 나가기)
+				// token[1]: 메시지(닉네임, 메시지 내용)
+				String[] tokens = request.split(":"); // 읽어온 데이터를 ":" 기준으로 split
+				if("JOIN".equals(tokens[0])) { // 닉네임 등록
 					doJoin(tokens[1], pw);
-				}else if("MESSAGE".equals(tokens[0])) {
+				}else if("MESSAGE".equals(tokens[0])) { // 메시지 전달
 					doMessage(tokens[1]);
-				}else if("QUIT".equals(tokens[0])) {
+				}else if("QUIT".equals(tokens[0])) { // 방 나가기
 					doQuit(pw);
 					break;
 				}else {
@@ -84,44 +86,44 @@ public class ChatServerThread extends Thread{
 		this.nickname = nickname;
 		
 		String data = nickname + "님이 입장하였습니다.";
-		broadcast(data);
+		broadcast(data); // 사용자가 채팅방에 참여했을 때, 다른 사용자들에게 입장 메시지를 브로드캐스팅
 		
 		/* writer pool에 저장 */
-		addWriter(pw);
+		addWriter(pw); // List 공유 객체에 추가
 		
-		// ack
+		// ack(Client로부터 채팅방 참여 요청을 잘 받았다고 Server에서 Client로 ACK 메시지 전달)
 		pw.println("JOIN:OK");
 	}
 	
 	private void addWriter(PrintWriter pw) {
 		synchronized(listWriters) {
-			listWriters.add(pw);
+			listWriters.add(pw); // List 공유 객체에 파라미터로 받은 PrintWriter 추가
 		}
 	}
 	
-	private void broadcast(String data) {
-		synchronized(listWriters) {
+	private void broadcast(String data) { // Server에서 연결된 모든 Client에 메시지를 보내는 메소드
+		synchronized(listWriters) { // 스레드간 공유 객체인 listWriters에 접근하기 때문에 동기화 처리
 			for(PrintWriter pw : listWriters) {
-				pw.println(data);
+				pw.println(data); // 연결된 모든 Client에 메시지 전달
 			}
 		}
 	}
 	
 	private void doMessage(String message) {
 		String data = nickname + ":" + message;
-		broadcast(data);
+		broadcast(data); // 사용자가 채팅을 보낼 때, 다른 사용자들에게 메시지를 브로드캐스팅
 	}
 	
 	private void doQuit(PrintWriter pw) {
-		removeWriter(pw);
+		removeWriter(pw); // List 공유 객체에서 제거
 		
 		String data = nickname + "님이 퇴장하였습니다.";
-		broadcast(data);
+		broadcast(data); // 사용자가 채팅방을 나갈 때, 다른 사용자들에게 퇴장 메시지를 브로드캐스팅
 	}
 
 	private void removeWriter(PrintWriter pw) {
 		synchronized(listWriters) {
-			listWriters.remove(pw);
+			listWriters.remove(pw); // List 공유 객체에 파라미터로 받은 PrintWriter 제거
 		}
 	}
 

@@ -33,26 +33,30 @@ public class ChatClient {
 
 			// 5. join 프로토콜
 			System.out.print("닉네임>>");
-			String nickname = scanner.nextLine();
-			pw.println("JOIN:"+nickname);
-			String ack = br.readLine();
+			String nickname = scanner.nextLine(); // 첫 입력은 사용자 이름
+			pw.println("JOIN:"+nickname); // server로 송신
+			String ack = br.readLine(); // server로부터 ack 메시지 읽어들임
 			if("JOIN:OK".equals(ack)) {
 				System.out.println("입장하였습니다. 즐거운 채팅 되세요");
 			}
 			
 			// 6. ChatClientThread 시작
-			new ChatClientThread(socket).start();
+			new ChatClientThread(socket).start(); // 접속하는 Client마다 소켓 스레드 실행하고 시작
 			
 			// 7. 키보드 입력 처리
 			while(true) {
+				if( scanner.hasNextLine() == false ) {
+					continue;
+				}
+				
 				System.out.print(">>");
-				String input = scanner.nextLine();
+				String input = scanner.nextLine(); // 키보드로부터 데이터 입력받기
 				
 				if("quit".equals(input) == true) {
 					// 8. quit 프로토콜 처리
 					pw.println("QUIT");
 					break;
-				}else {
+				}else { // "quit"이 아니면 메시지 처리
 					pw.println("MESSAGE:" + input);
 				}
 			}
