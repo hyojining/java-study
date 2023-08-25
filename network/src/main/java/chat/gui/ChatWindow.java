@@ -12,6 +12,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
+
+import chat.ChatClient;
+import chat.ChatClientThread;
 
 public class ChatWindow {
 
@@ -20,13 +31,19 @@ public class ChatWindow {
 	private Button buttonSend;
 	private TextField textField;
 	private TextArea textArea;
+	private Socket socket;
+	private BufferedReader br;
+	private PrintWriter pw;
+	private String name;
+	
 
-	public ChatWindow(String name) {
+	public ChatWindow(String name, Socket socket) {
 		frame = new Frame(name);
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
+		this.socket = socket;
 	}
 
 	public void show() { // 위젯을 윈도우에 붙힘
@@ -75,8 +92,19 @@ public class ChatWindow {
 		frame.setVisible(true);
 		frame.pack(); // 윈도우 띄우기
 		
-		// IOStream 받아오기
-		// ChatClientThread 생성하고 실행 (br만 넘겨주면 됨)
+		
+		try {
+			// IOStream 받아오기
+			br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+			
+			new ChatClientThread().start();
+			
+		} catch (IOException ex) {
+			ChatClientApp.log("error:" + ex);
+		}
+		
+		
 	}
 	
 	private void sendMessage() {
@@ -86,9 +114,9 @@ public class ChatWindow {
 		textField.setText("");
 		textField.requestFocus();
 		
-		
 		// ChatClientThread에서 서버로부터 받은 메세지가 있다고 치고~~
-		updateTextArea("마이콜: " + message); // 여기서 불러오는 거 아님
+		updateTextArea(name + ":" + message); // 여기서 불러오는 거 아님
+		pw.println("MESSAGE:" + message);
 
 	}
 	
@@ -99,19 +127,34 @@ public class ChatWindow {
 	
 	private void finish() {
 		// quit 프로토콜
-		
-		
+		pw.println("QUIT");
+
 		// exit java(JVM)
 		System.exit(0);
 		
 	}
 	
 	private class ChatClientThread extends Thread{
-
+		
 		@Override
 		public void run() {
-			updateTextArea("마이콜: 안녕~");
-			sendMessage();
+			/* reader를 통해 읽은 데이터 콘솔에 출력하기 (message 처리) */
+			try {
+				while(true) {
+					String line = br.readLine(); // server로부터 데이터 읽기
+					if(line == null) {
+						break;
+					}
+					
+					updateTextArea(line); // server로부터 읽은 데이터를 콘솔에 출력
+				}
+			} catch(SocketException ex) {
+				ChatClient.log("error:"+ ex);
+			} catch(IOException ex) {
+				ChatClient.log("error:"+ex);
+			} finally {
+				System.exit(0);
+			}
 		}
 		
 	}
