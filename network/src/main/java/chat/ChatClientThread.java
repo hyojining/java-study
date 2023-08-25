@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 public class ChatClientThread extends Thread{
+	
 	private Socket socket;
 	private BufferedReader br;
 	
@@ -36,5 +37,4 @@ public class ChatClientThread extends Thread{
 			System.exit(0);
 		}
 	}
-
 }

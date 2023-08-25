@@ -76,7 +76,7 @@ public class ChatServerThread extends Thread{
 					socket.close();
 				}
 			}catch (IOException ex) {
-				ChatClient.log("error:" + ex);
+				ChatServer.log("error:" + ex);
 		    }
 		}
 				

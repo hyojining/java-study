@@ -20,9 +20,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-
 import chat.ChatClient;
-import chat.ChatClientThread;
 
 public class ChatWindow {
 
@@ -34,8 +32,6 @@ public class ChatWindow {
 	private Socket socket;
 	private BufferedReader br;
 	private PrintWriter pw;
-	private String name;
-	
 
 	public ChatWindow(String name, Socket socket) {
 		frame = new Frame(name);
@@ -109,15 +105,12 @@ public class ChatWindow {
 	
 	private void sendMessage() {
 		String message = textField.getText();
-		System.out.println("메세지를 보내는 프로토콜 구현:" + message);
+//		System.out.println("메세지를 보내는 프로토콜 구현:" + message);
 		
 		textField.setText("");
 		textField.requestFocus();
 		
-		// ChatClientThread에서 서버로부터 받은 메세지가 있다고 치고~~
-		updateTextArea(name + ":" + message); // 여기서 불러오는 거 아님
 		pw.println("MESSAGE:" + message);
-
 	}
 	
 	private void updateTextArea(String message) {
@@ -127,11 +120,19 @@ public class ChatWindow {
 	
 	private void finish() {
 		// quit 프로토콜
-		pw.println("QUIT");
-
-		// exit java(JVM)
-		System.exit(0);
-		
+		// pw.println("QUIT");
+		try {
+			// 자원정리
+			if (socket != null && socket.isClosed() == false) {
+				socket.close();
+			}
+			
+			// exit java(JVM)
+			System.exit(0);
+			
+		} catch (IOException ex) {
+			ChatClientApp.log("error:" + ex);
+		}
 	}
 	
 	private class ChatClientThread extends Thread{
@@ -145,8 +146,7 @@ public class ChatWindow {
 					if(line == null) {
 						break;
 					}
-					
-					updateTextArea(line); // server로부터 읽은 데이터를 콘솔에 출력
+					updateTextArea(line); // textArea에 데이터 추가
 				}
 			} catch(SocketException ex) {
 				ChatClient.log("error:"+ ex);
@@ -156,6 +156,5 @@ public class ChatWindow {
 				System.exit(0);
 			}
 		}
-		
 	}
 }
