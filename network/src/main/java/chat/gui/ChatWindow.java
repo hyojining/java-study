@@ -46,12 +46,7 @@ public class ChatWindow {
 		// Button
 		buttonSend.setBackground(Color.GRAY);
 		buttonSend.setForeground(Color.WHITE);
-		buttonSend.addActionListener( new ActionListener() { // 이름없는 클래스
-			@Override
-			public void actionPerformed( ActionEvent actionEvent ) {
-				sendMessage();
-			}
-		});
+		buttonSend.addActionListener(actionEvent -> sendMessage());
 		
 //		buttonSend.addActionListener((ActionEvent actionEvent) -> { 
 //				sendMessage();
